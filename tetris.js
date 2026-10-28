@@ -9,6 +9,11 @@ let cutscene=1;
 let blockSprite;
 let gridX = 4; // Initial column position;
 let gridY = 0; // Initial row position (top of board);
+//current piece
+
+let currentPiece;
+//frame is to move the piece one block ish at a time
+let frame;
 const CELL_SIZE = 5;
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -106,8 +111,46 @@ function drawTetris() {
         CELL_SIZE * 2
     );
 }
+  //draws current piece.
+currentPiece.update()
+
+}
+//Inspired by w3 schools game tutorial
+//Can hold a shape of a rectangle that will fall via move function
+function gameObject (width, height, color, x, y, type){
+    this.width = width;
+    this.height = height;
+    this.type = type;
+    this.x = x;
+    this.y = y;
+    this.update = function(){
+        
+        if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.move = function(pos){
+        var step = 20;
+        if (pos === "left" && this.x > 174 ) this.x = gridX;
+        else if (pos === "right") this.x = gridX;
+        else if (pos === "up") this.y -= step;
+        else if (pos === "down") this.y += step;
+    }
 }
 
+    
+function movePieceDown(){
+    frame++
+    if(frame %2 == 0){
+        currentPiece.move("down");
+    }
+  
+}
 // loop bg
 function animationLoop() {
     drawTetris();
@@ -137,9 +180,11 @@ async function init() {
             loadImage("assets/skinny-bat.png"),
             loadImage("assets/tetrominoe-1.png"),
         ]);
-
+        currentPiece = new gameObject(30, 30, "red", canvas.width/2, 120);
         // Start continuous animation loop so the video updates live
         animationLoop();
+        frame = 0;
+        setInterval(movePieceDown,1000);
 
         // Spawn a bat every 2 seconds
         setInterval(spawnBat, 2000);
