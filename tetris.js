@@ -158,7 +158,7 @@ function animationLoop() {
 }
 
 //just keeps playing you lost
-const sound = document.getElementById("you-lost-sound");
+const sound = document.getElementById("soundtest");
 setInterval(() => {
     sound.currentTime = 0;
     sound.play();
