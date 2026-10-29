@@ -157,6 +157,13 @@ function animationLoop() {
     requestAnimationFrame(animationLoop);
 }
 
+//just keeps playing you lost
+const sound = document.getElementById("you-lost-sound");
+setInterval(() => {
+    sound.currentTime = 0;
+    sound.play();
+}, 5000);
+
 // Spawn bats randomly
 function spawnBat() {
     const size = 40;
