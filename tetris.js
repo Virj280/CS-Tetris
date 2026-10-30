@@ -2,15 +2,19 @@ const canvas = document.getElementById('tetrisbackground');
 const ctx = canvas.getContext('2d');
 const CELL_SIZE = 5;
 window.addEventListener('keydown', (e) => {
+    // Calculate boardX dynamically using board sprite
+    const boardWidth = sprite ? sprite.width * 0.4 : 0;
+    const boardX = (canvas.width - boardWidth) / 2;
+
     if (e.key === 'a' || e.key === 'A') {
-        // Calculate where the block would be in pixels if it is moved left
         const nextPixelX = boardX + ((gridX - 1) * CELL_SIZE);
-        // Only allow movement if it stays at or to the right of 175px
         if (nextPixelX >= 175) {
             gridX--;
         }
-    };
-    if (e.key === 'd' || e.key === 'D'){gridX++};
+    }
+    if (e.key === 'd' || e.key === 'D') {
+        gridX++;
+    }
 });
 let cutscene=1;
         // the cutscene variable is for when skinny bat or fat bat spawns, so that blocks don't spawn while you watch the bats fall to the ground. when skinny bat or fat bat dies cutscene gets set back to 0 so blocks can continue spawning. however no functionality exists for this variable yet.
@@ -151,13 +155,16 @@ function gameObject (width, height, color, x, y, type){
 }
 
     
-function movePieceDown(){
-    frame++
-    if(frame %2 == 0){
-        currentPiece.move("down");
-    }
-  
-}
+//function movePieceDown(){
+//    frame++
+//    if(frame %2 == 0){
+//        currentPiece.move("down");
+//    }
+//  
+//}
+
+
+
 // loop bg
 function animationLoop() {
     drawTetris();
@@ -188,17 +195,24 @@ function spawnBat() {
 async function init() {
     try {
         // Preload all assets once so they don't block drawing loops
-        [background, sprite, batSprite] = await Promise.all([
+        [background, sprite, batSprite, blockSprite] = await Promise.all([
             loadVideo("assets/bg-animated-embed.mp4"),
             loadImage("assets/tetris-board.png"),
             loadImage("assets/skinny-bat.png"),
             loadImage("assets/tetrominoe-1.png"),
         ]);
-        currentPiece = new gameObject(30, 30, "red", canvas.width/2, 120);
+
+
+//currentPiece = new gameObject(30, 30, "red", canvas.width/2, 120);
+        
+        
         // Start continuous animation loop so the video updates live
         animationLoop();
+        setInterval(() => {if (cutscene === 0){ gridY++;}}, 1000);
         frame = 0;
-        setInterval(movePieceDown,1000);
+
+
+//        setInterval(movePieceDown,1000);
 
         // Spawn a bat every 2 seconds
         setInterval(spawnBat, 2000);
