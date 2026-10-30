@@ -1,8 +1,16 @@
 const canvas = document.getElementById('tetrisbackground');
 const ctx = canvas.getContext('2d');
+const CELL_SIZE = 5;
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'a' || e.key === 'A') gridX--;
-  if (e.key === 'd' || e.key === 'D') gridX++;
+    if (e.key === 'a' || e.key === 'A') {
+        // Calculate where the block would be in pixels if it is moved left
+        const nextPixelX = boardX + ((gridX - 1) * CELL_SIZE);
+        // Only allow movement if it stays at or to the right of 175px
+        if (nextPixelX >= 175) {
+            gridX--;
+        }
+    };
+    if (e.key === 'd' || e.key === 'D'){gridX++};
 });
 let cutscene=1;
         // the cutscene variable is for when skinny bat or fat bat spawns, so that blocks don't spawn while you watch the bats fall to the ground. when skinny bat or fat bat dies cutscene gets set back to 0 so blocks can continue spawning. however no functionality exists for this variable yet.
@@ -14,7 +22,6 @@ let gridY = 0; // Initial row position (top of board);
 let currentPiece;
 //frame is to move the piece one block ish at a time
 let frame;
-const CELL_SIZE = 5;
 function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
