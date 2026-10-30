@@ -1,19 +1,15 @@
 const canvas = document.getElementById('tetrisbackground');
 const ctx = canvas.getContext('2d');
 const CELL_SIZE = 5;
-window.addEventListener('keydown', (e) => {
-    // Calculate boardX dynamically using board sprite
-    const boardWidth = sprite ? sprite.width * 0.4 : 0;
-    const boardX = (canvas.width - boardWidth) / 2;
 
-    if (e.key === 'a' || e.key === 'A') {
-        const nextPixelX = boardX + ((gridX - 1) * CELL_SIZE);
-        if (nextPixelX >= 175) {
-            gridX--;
-        }
+window.addEventListener('keydown', (e) => {
+    if (!currentPiece) return;
+
+    if (e.key === 'ArrowLeft') {
+        currentPiece.move('left');
     }
-    if (e.key === 'd' || e.key === 'D') {
-        gridX++;
+    if (e.key === 'ArrowRight') {
+        currentPiece.move('right');
     }
 });
 let cutscene=1;
@@ -128,14 +124,14 @@ currentPiece.update()
 }
 //Inspired by w3 schools game tutorial
 //Can hold a shape of a rectangle that will fall via move function
-function gameObject (width, height, color, x, y, type){
+function gameObject(width, height, color, x, y, type) {
     this.width = width;
     this.height = height;
     this.type = type;
     this.x = x;
     this.y = y;
-    this.update = function(){
-        
+
+    this.update = function() {
         if (this.type == "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
@@ -145,26 +141,29 @@ function gameObject (width, height, color, x, y, type){
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
     }
-    this.move = function(pos){
+
+    this.move = function(pos) {
         var step = 20;
-        if (pos === "left" && this.x > 174 ) this.x = gridX;
-        else if (pos === "right") this.x = gridX;
-        else if (pos === "up") this.y -= step;
-        else if (pos === "down") this.y += step;
+        if (pos === "left" && this.x - step >= 174) {
+            this.x -= step;
+        } else if (pos === "right" && this.x + this.width + step <= canvas.width - 174) {
+            this.x += step;
+        } else if (pos === "up") {
+            this.y -= step;
+        } else if (pos === "down") {
+            this.y += step;
+        }
     }
 }
 
     
-//function movePieceDown(){
-//    frame++
-//    if(frame %2 == 0){
-//        currentPiece.move("down");
-//    }
-//  
-//}
-
-
-
+function movePieceDown(){
+    frame++
+    if(frame %2 == 0){
+        currentPiece.move("down");
+    }
+  
+}
 // loop bg
 function animationLoop() {
     drawTetris();
@@ -173,10 +172,11 @@ function animationLoop() {
 
 //just keeps playing you lost
 const sound = document.getElementById("soundtest");
-setInterval(() => {
+function soundcall(){
     sound.currentTime = 0;
     sound.play();
-}, 5000);
+}
+
 
 // Spawn bats randomly
 function spawnBat() {
@@ -195,27 +195,21 @@ function spawnBat() {
 async function init() {
     try {
         // Preload all assets once so they don't block drawing loops
-        [background, sprite, batSprite, blockSprite] = await Promise.all([
+        [background, sprite, batSprite] = await Promise.all([
             loadVideo("assets/bg-animated-embed.mp4"),
             loadImage("assets/tetris-board.png"),
             loadImage("assets/skinny-bat.png"),
             loadImage("assets/tetrominoe-1.png"),
         ]);
-
-
-//currentPiece = new gameObject(30, 30, "red", canvas.width/2, 120);
-        
-        
+        currentPiece = new gameObject(30, 30, "red", canvas.width/2, 120);
         // Start continuous animation loop so the video updates live
         animationLoop();
-        setInterval(() => {if (cutscene === 0){ gridY++;}}, 1000);
         frame = 0;
-
-
-//        setInterval(movePieceDown,1000);
+        setInterval(movePieceDown,1000);
 
         // Spawn a bat every 2 seconds
         setInterval(spawnBat, 2000);
+        setInterval(soundcall, 5000);
 
     } catch (error) {
         console.error("cant load bg or ui:", error);
