@@ -6,3 +6,5 @@ The game is tetris; you like, uh, drop tetrominos and you can rotate and move th
 Uh once a row gets full, it is deleted and you are awarded points.
 Also, skinny bat will appear, which is a harbinger of fat bat, which will spawn and obstruct you from placing blocks. Which is the whole point of this tetris mod.
 Also, when you are playing the game, Ego Bat will insult you, and Loser Bat will insult you when you lose (and possibly close the tab).
+
+We also just hit 100 commits, woohoo.
