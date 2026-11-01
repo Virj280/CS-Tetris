@@ -170,11 +170,20 @@ function gameObject(width, height, color, x, y, type) {
 
     
 function movePieceDown(){
-    frame++
-    if(frame %2 == 0){
+    frame++;
+
+    const scale = 0.4;
+    const boardHeight = sprite.height * scale;
+    const boardY = (canvas.height - boardHeight) / 2;
+    const bottomY = boardY + boardHeight - currentPiece.height - 20;
+
+    if (frame % 2 == 0 && currentPiece.y < bottomY) {
         currentPiece.move("down");
+
+        if (currentPiece.y > bottomY) {
+            currentPiece.y = bottomY;
+        }
     }
-  
 }
 // loop bg
 function animationLoop() {
