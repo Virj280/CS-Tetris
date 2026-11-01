@@ -11,7 +11,19 @@ window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') {
         currentPiece.move('right');
     }
+    if (e.key === 'ArrowDown'){
+        dropPiece();
+    }
 });
+
+function dropPiece() {
+    const scale = 0.4;
+    const boardHeight = sprite.height * scale;
+    const boardY = (canvas.height - boardHeight) / 2;
+
+    currentPiece.y = boardY + boardHeight - currentPiece.height - 20;
+}
+
 let cutscene=1;
         // the cutscene variable is for when skinny bat or fat bat spawns, so that blocks don't spawn while you watch the bats fall to the ground. when skinny bat or fat bat dies cutscene gets set back to 0 so blocks can continue spawning. however no functionality exists for this variable yet.
 let blockSprite;
